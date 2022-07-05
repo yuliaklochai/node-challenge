@@ -23,12 +23,12 @@ async function editTemplate() {
   if (fs.existsSync(answerData) && path.extname(answerData) === ".json") {
     const file = fs.readFileSync(answerData, "utf8");
     data = JSON.parse(file);
-  } else throw new Error("Error new one");
+  } else throw new Error("Path to data files isn't correct.");
 
   const answerTemplate = await getAnswer("Enter the path to the template: ");
   if (fs.existsSync(answerTemplate) && path.extname(answerTemplate) === ".html") {
     template = fs.readFileSync(answerTemplate, "utf8");
-  } else throw new Error("Error new one");
+  } else throw new Error("Path to template isn't correct.");
 
   for (let key in data) {
     template = template.replace(`{{${key}}}`, data[key])
@@ -53,7 +53,7 @@ async function initServer() {
         });
     }
     catch {
-        throw new Error;
+        throw new Error();
     }
 }
 
