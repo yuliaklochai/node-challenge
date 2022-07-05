@@ -19,16 +19,19 @@ async function editTemplate() {
   let data;
   let template;
 
-  const answerData = await getAnswer("Enter the path to the data file: ");
-  if (fs.existsSync(answerData) && path.extname(answerData) === ".json") {
-    const file = fs.readFileSync(answerData, "utf8");
+  let possibleTemplatesFiles = fs.readdirSync("./templates/").filter(file => file.split(".").slice(-1) == 'html');
+  let possibleDataFiles = fs.readdirSync("./data/").filter(file => file.split(".").slice(-1) == "json");
+
+  const answerTemplate = await getAnswer(`Enter the path to the template (${possibleTemplatesFiles}): `);
+  if (fs.existsSync(`./templates/${answerTemplate}`)) {
+    template = fs.readFileSync(`./templates/${answerTemplate}`, "utf8");
+  } else throw new Error("Path to template isn't correct.");
+
+  const answerData = await getAnswer(`Enter the path to the data file (${possibleDataFiles}): `);
+  if (fs.existsSync(`./data/${answerData}`)) {
+    const file = fs.readFileSync(`./data/${answerData}`, "utf8");
     data = JSON.parse(file);
   } else throw new Error("Path to data files isn't correct.");
-
-  const answerTemplate = await getAnswer("Enter the path to the template: ");
-  if (fs.existsSync(answerTemplate) && path.extname(answerTemplate) === ".html") {
-    template = fs.readFileSync(answerTemplate, "utf8");
-  } else throw new Error("Path to template isn't correct.");
 
   for (let key in data) {
     template = template.replace(`{{${key}}}`, data[key])
